@@ -1,6 +1,6 @@
 version: '3.0'
 services:
-  php-apache:
+  server:
     container_name: laravel-docker
     build: 
       context: .
@@ -10,13 +10,19 @@ services:
     ports:
       - 9000:80
   
-  mysql_db:
+  mysql:
+    container_name: mysql_database
     image: mysql:latest
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: laravel_docker
     ports:
     - 3309:3306
+    volumes:
+      - ./mysql:/var/lib/mysql
+    depends_on:
+      - server
+
   
   phpmyadmin:
     image: phpmyadmin:latest
@@ -24,3 +30,6 @@ services:
       - 9001:80
     environment:     
     - PMA_ARBITRARY=1
+    depends_on:
+      - server
+      - mysql
